@@ -114,18 +114,25 @@ class Main2Activity : AppCompatActivity(), OnMapReadyCallback,LocationListener {
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-        mMap.uiSettings.isZoomControlsEnabled = true
         // Add a marker in Sydney and move the camera
         val sydney = LatLng(-34.0, 151.0)
 //        mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+
+        with(mMap.uiSettings) {
+            setAllGesturesEnabled(true)
+            isZoomControlsEnabled = true
+        }
+        
+//        val newMap = mMap.z
+
         addHeatMapWeighted()
         //addHeatMap();
     }
 
     private fun addHeatMapWeighted() {
         val list = readItems(R.raw.sample_data)
-        val provider = HeatmapTileProvider.Builder().weightedData(list).gradient(HeatmapTileProvider.DEFAULT_GRADIENT).build()
+        val provider = HeatmapTileProvider.Builder().weightedData(list).gradient(ALT_HEATMAP_GRADIENT).build()
         mMap.addTileOverlay(TileOverlayOptions().tileProvider(provider))
     }
 
@@ -183,19 +190,28 @@ class Main2Activity : AppCompatActivity(), OnMapReadyCallback,LocationListener {
             val `object` = array.getJSONObject(i)
             val lat = `object`.getDouble("lat")
             val lng = `object`.getDouble("long")
-            val weight = `object`.getDouble("weight")
+            var weig: Double? = null
+            try {
+                weig = `object`.getDouble("weight")
+            }catch (e: Exception){
+                println("Error XXX = " + e.message)
+            }
             list.add(LatLng(lat, lng))
 
             val x : LatLng? = list[i]
 
-            if(weight < 2){
-                list2.add(WeightedLatLng(x, 1.0))
-            }else if(weight < 5 && weight >= 2){
-                list2.add(WeightedLatLng(x, 5.0))
-            }else if(weight < 8 && weight >= 5){
-                list2.add(WeightedLatLng(x, 20.0))
-            }else{
-                list2.add(WeightedLatLng(x, 50.0))
+            val weight = weig?.times(1000)
+
+            if (weight != null) {
+                if(weight < 20){
+                    list2.add(WeightedLatLng(x, 1.0))
+                }else if(weight < 30 && weight >= 20){
+                    list2.add(WeightedLatLng(x, 10.0))
+                }else if(weight < 50 && weight >= 30){
+                    list2.add(WeightedLatLng(x, 50.0))
+                }else{
+                    list2.add(WeightedLatLng(x, 100.0))
+                }
             }
         }
         return list2
