@@ -52,11 +52,20 @@ class Main2Activity : AppCompatActivity(), OnMapReadyCallback,LocationListener {
             Color.rgb(255, 0, 0)
     )
 
-    val ALT_HEATMAP_GRADIENT_START_POINTS = floatArrayOf(
+    private val ALT_HEATMAP_GRADIENT_START_POINTS = floatArrayOf(
             0.0f, 0.10f, 0.20f, 0.60f, 1.0f
     )
 
-    val ALT_HEATMAP_GRADIENT: Gradient = Gradient(ALT_HEATMAP_GRADIENT_COLORS,
+    private val colors = intArrayOf(
+            Color.GREEN,  // green(0-50)
+            Color.YELLOW,  // yellow(51-100)
+            Color.rgb(255, 165, 0),  //Orange(101-150)
+            Color.RED,  //red(151-200)
+            Color.rgb(153, 50, 204),  //dark orchid(201-300)
+            Color.rgb(165, 42, 42) //brown(301-500)
+    )
+
+    private val ALT_HEATMAP_GRADIENT: Gradient = Gradient(colors,
             ALT_HEATMAP_GRADIENT_START_POINTS)
 
     override fun onLocationChanged(location: Location?) {
@@ -203,14 +212,6 @@ class Main2Activity : AppCompatActivity(), OnMapReadyCallback,LocationListener {
         mMap.addTileOverlay(TileOverlayOptions().tileProvider(provider))
     }*/
 
-    var colors = intArrayOf(
-            Color.GREEN,  // green(0-50)
-            Color.YELLOW,  // yellow(51-100)
-            Color.rgb(255, 165, 0),  //Orange(101-150)
-            Color.RED,  //red(151-200)
-            Color.rgb(153, 50, 204),  //dark orchid(201-300)
-            Color.rgb(165, 42, 42) //brown(301-500)
-    )
 
     var startpoints = floatArrayOf(
             0.1f, 0.2f, 0.3f, 0.4f, 0.6f, 1.0f
